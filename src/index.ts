@@ -14,7 +14,7 @@ const whitelist = [
   'https://jerrywonder2126.github.io',
 ];
 const corsOptions = {
-  origin: whitelist,
+  origin: whitelist[0],
   optionsSuccessStatus: 200,
 };
 
