@@ -11,11 +11,10 @@ dotenv.config();
 const app = express();
 const whitelist = [
   'http://localhost:4200',
-  'http://example2.com',
   'https://jerrywonder2126.github.io',
 ];
 const corsOptions = {
-  origin: whitelist[2],
+  origin: whitelist,
   optionsSuccessStatus: 200,
 };
 

@@ -2,9 +2,9 @@ import {Client} from 'pg';
 
 let client: Client;
 
-if (process.env.DATABSE_URL) {
+if (process.env.DATABASE_URL) {
   client = new Client({
-    connectionString: process.env.DATABSE_URL,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
       rejectUnauthorized: false,
     },
@@ -19,8 +19,7 @@ if (process.env.DATABSE_URL) {
   });
 }
 
-client.connect();
-// .then(() => console.log('Connected'))
+client.connect().then(() => console.log('Connected'));
 // .catch(err => console.log(err));
 
 export {client};
