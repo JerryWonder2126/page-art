@@ -19,13 +19,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(fileUpload());
-const staticPath = path.join(__dirname, '../../frontend/dist/art-page');
-app.use('/', express.static(staticPath));
+// const staticPath = path.join(__dirname, '../../frontend/dist/art-page');
+// app.use('/', express.static(staticPath));
 
-app.listen(process.env.PORT || 12080, () => {
-  console.log('application now running on port 3000');
-});
-
-console.log(staticPath);
+app.listen(process.env.PORT || 12080);
 
 app.use('/resources', router);
