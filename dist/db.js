@@ -4,9 +4,9 @@ exports.client = void 0;
 var pg_1 = require("pg");
 var client;
 exports.client = client;
-if (process.env.DATABSE_URL) {
+if (process.env.DATABASE_URL) {
     exports.client = client = new pg_1.Client({
-        connectionString: process.env.DATABSE_URL,
+        connectionString: process.env.DATABASE_URL,
         ssl: {
             rejectUnauthorized: false,
         },
