@@ -5,14 +5,17 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
 import {router} from './controllers/artpage.controller';
-import path from 'path';
 
 dotenv.config();
 
 const app = express();
-const whitelist = ['http://localhost:4200', 'http://example2.com'];
+const whitelist = [
+  'http://localhost:4200',
+  'http://example2.com',
+  'https://jerrywonder2126.github.io',
+];
 const corsOptions = {
-  origin: whitelist[0],
+  origin: whitelist[2],
   optionsSuccessStatus: 200,
 };
 
@@ -23,5 +26,5 @@ app.use(fileUpload());
 // app.use('/', express.static(staticPath));
 
 app.listen(process.env.PORT || 12080);
-
+console.log('ok');
 app.use('/resources', router);
