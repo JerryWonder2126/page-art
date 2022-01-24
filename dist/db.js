@@ -21,5 +21,5 @@ else {
         port: Number(process.env.PGPORT) || 5432,
     });
 }
-client.connect();
+client.connect().then(function () { return console.log('Connected'); });
 //# sourceMappingURL=db.js.map

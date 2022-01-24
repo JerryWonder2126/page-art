@@ -11,11 +11,18 @@ dotenv_1.default.config();
 var app = (0, express_1.default)();
 var whitelist = [
     'http://localhost:4200',
-    'http://example2.com',
     'https://jerrywonder2126.github.io',
 ];
 var corsOptions = {
-    origin: whitelist[2],
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            console.log(origin);
+            callback(null, true);
+        }
+        else {
+            callback(new Error("".concat(origin, " not allowed by CORS")));
+        }
+    },
     optionsSuccessStatus: 200,
 };
 app.use((0, cors_1.default)(corsOptions));
