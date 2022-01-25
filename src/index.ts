@@ -15,8 +15,7 @@ const whitelist = [
 ];
 const corsOptions = {
   origin: function (origin: any, callback: any) {
-    if (whitelist.indexOf(origin) !== -1) {
-      console.log(origin);
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
       callback(new Error(`${origin} not allowed by CORS`));
@@ -34,3 +33,6 @@ app.use(fileUpload());
 app.listen(process.env.PORT || 12080);
 console.log('ok');
 app.use('/resources', router);
+app.get('*', (req, res) => {
+  res.redirect(whitelist[1]);
+});
