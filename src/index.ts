@@ -9,10 +9,11 @@ import {router} from './controllers/artpage.controller';
 dotenv.config();
 
 const app = express();
-const whitelist = [
-  'http://localhost:4200',
-  'https://jerrywonder2126.github.io',
-];
+
+const whitelist: string[] = process.env.BASE_URLs
+  ? process.env.BASE_URLs.split(',')
+  : [];
+
 const corsOptions = {
   origin: function (origin: any, callback: any) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -27,12 +28,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(fileUpload());
-// const staticPath = path.join(__dirname, '../../frontend/dist/art-page');
-// app.use('/', express.static(staticPath));
+app.use('/resources', router);
 
 app.listen(process.env.PORT || 12080);
-console.log('ok');
-app.use('/resources', router);
-app.get('*', (req, res) => {
-  res.redirect(whitelist[1]);
-});
