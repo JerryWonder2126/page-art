@@ -112,7 +112,7 @@ function init() {
         });
     });
 }
-var storageAccountName = 'culdevtest';
+var storageAccountName = 'artwebstorage';
 var containerName = 'images';
 var IMG_URL_PREFIX = "https://".concat(storageAccountName, ".blob.core.windows.net/").concat(containerName, "/");
 function parseImgURL(results, singleImage) {

@@ -70,7 +70,7 @@ async function init() {
   }
 }
 
-const storageAccountName = 'culdevtest';
+const storageAccountName = 'artwebstorage';
 const containerName = 'images';
 
 const IMG_URL_PREFIX = `https://${storageAccountName}.blob.core.windows.net/${containerName}/`;
