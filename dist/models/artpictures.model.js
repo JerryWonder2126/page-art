@@ -398,12 +398,13 @@ var OffersModel = /** @class */ (function () {
                     case 2:
                         //If images then carry out uploading operation
                         imageNames = _a.sent();
-                        imageNames.push.apply(imageNames, (0, tslib_1.__spreadArray)([], (0, tslib_1.__read)(body.value), false)); // Add previous names to the list too
+                        imageNames.push.apply(imageNames, (0, tslib_1.__spreadArray)([], (0, tslib_1.__read)((0, upload_image_service_1.deparseImgURL)(body.value)), false)); // Add previous names to the list too
                         return [3 /*break*/, 5];
                     case 3: return [4 /*yield*/, (0, upload_image_service_1.deleteSingleImage)((0, upload_image_service_1.deparseImgURL)(body.nameToDelete)[0])];
                     case 4:
                         deleteHandle = _a.sent();
                         if (deleteHandle) {
+                            // This holds when an image gets deleted, not during uploads
                             imageNames = (0, upload_image_service_1.deparseImgURL)(body.updateWith); // images not given implies there's no need to upload, names have already been provided
                         }
                         _a.label = 5;

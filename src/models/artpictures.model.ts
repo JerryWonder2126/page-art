@@ -258,13 +258,14 @@ class OffersModel {
       if (images) {
         //If images then carry out uploading operation
         imageNames = await saveImageBatch(images);
-        imageNames.push(...body.value); // Add previous names to the list too
+        imageNames.push(...deparseImgURL(body.value)); // Add previous names to the list too
       } else {
         // This will delete nameToDelete from pictures in model and update model's pictures with updateWith
         const deleteHandle = await deleteSingleImage(
           deparseImgURL(body.nameToDelete)[0]
         );
         if (deleteHandle) {
+          // This holds when an image gets deleted, not during uploads
           imageNames = deparseImgURL(body.updateWith); // images not given implies there's no need to upload, names have already been provided
         }
       }
