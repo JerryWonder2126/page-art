@@ -144,7 +144,12 @@ class OffersModel {
     long_description: string,
     price: string,
     images: any[],
-    section_hash: string
+    section_hash: string,
+    artist: string,
+    medium: string,
+    year: number,
+    dimension: string,
+    orientation: string
   ) {
     const response: IParsedResponse = {
       rows: [],
@@ -154,8 +159,8 @@ class OffersModel {
       const azureResponse = await saveImageBatch(images);
       const parsedImgURL = `{${azureResponse}}`;
       const query = `INSERT INTO ${this.tableName} (
-        title, short_description, long_description, price, imgurl, uhash, section_hash)
-        VALUES ('${title}', '${short_description}','${long_description}', '${price}', '${parsedImgURL}', '${v4()}', '${section_hash}') RETURNING *;`;
+        title, short_description, long_description, price, imgurl, uhash, section_hash, artist, medium, year, dimension, orientation)
+        VALUES ('${title}', '${short_description}','${long_description}', '${price}', '${parsedImgURL}', '${v4()}', '${section_hash}', '${artist}', '${medium}', '${year}', '${dimension}', '${orientation}') RETURNING *;`;
       const res = await client.query(query);
       response.rows = res.rows;
     } catch (err: any) {
@@ -235,7 +240,12 @@ class OffersModel {
       title='${body.title}', 
       long_description='${body.long_description}', 
       short_description='${body.short_description}', 
-      price='${body.price}'
+      price='${body.price}',
+      artist='${body.artist}',
+      medium='${body.medium}',
+      year='${body.year}',
+      dimension='${body.dimension}',
+      orientation='${body.orientation}'
       WHERE uhash = '${body.uhash}' RETURNING *`;
       const res = await client.query(query);
       if (res) {

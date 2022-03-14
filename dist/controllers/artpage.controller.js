@@ -99,7 +99,7 @@ router.post('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void
                 body = JSON.parse(req.body.data);
                 images = [];
                 Object.keys(req['files']).forEach(function (key) { return images.push(req.files[key]); });
-                return [4 /*yield*/, artpictures_model_1.OfferModel.createOffer(body.title, body.short_description, body.long_description, body.price, images, body.section_hash)];
+                return [4 /*yield*/, artpictures_model_1.OfferModel.createOffer(body.title, body.short_description, body.long_description, body.price, images, body.section_hash, body.artist, body.medium, body.year, body.dimension, body.orientation)];
             case 1:
                 result = _a.sent();
                 if (result.error) {

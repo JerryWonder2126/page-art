@@ -68,7 +68,12 @@ router.post('/offers/', async (req: any, res: any) => {
     body.long_description,
     body.price,
     images,
-    body.section_hash
+    body.section_hash,
+    body.artist,
+    body.medium,
+    body.year,
+    body.dimension,
+    body.orientation
   );
   if (result.error) {
     res.statusCode = 404;

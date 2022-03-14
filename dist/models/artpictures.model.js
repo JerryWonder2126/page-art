@@ -219,7 +219,7 @@ var OffersModel = /** @class */ (function () {
         if (tableName === void 0) { tableName = 'offers'; }
         this.tableName = tableName;
     }
-    OffersModel.prototype.createOffer = function (title, short_description, long_description, price, images, section_hash) {
+    OffersModel.prototype.createOffer = function (title, short_description, long_description, price, images, section_hash, artist, medium, year, dimension, orientation) {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
             var response, azureResponse, parsedImgURL, query, res, err_7;
             return (0, tslib_1.__generator)(this, function (_a) {
@@ -236,7 +236,7 @@ var OffersModel = /** @class */ (function () {
                     case 2:
                         azureResponse = _a.sent();
                         parsedImgURL = "{".concat(azureResponse, "}");
-                        query = "INSERT INTO ".concat(this.tableName, " (\n        title, short_description, long_description, price, imgurl, uhash, section_hash)\n        VALUES ('").concat(title, "', '").concat(short_description, "','").concat(long_description, "', '").concat(price, "', '").concat(parsedImgURL, "', '").concat((0, uuid_1.v4)(), "', '").concat(section_hash, "') RETURNING *;");
+                        query = "INSERT INTO ".concat(this.tableName, " (\n        title, short_description, long_description, price, imgurl, uhash, section_hash, artist, medium, year, dimension, orientation)\n        VALUES ('").concat(title, "', '").concat(short_description, "','").concat(long_description, "', '").concat(price, "', '").concat(parsedImgURL, "', '").concat((0, uuid_1.v4)(), "', '").concat(section_hash, "', '").concat(artist, "', '").concat(medium, "', '").concat(year, "', '").concat(dimension, "', '").concat(orientation, "') RETURNING *;");
                         return [4 /*yield*/, db_1.client.query(query)];
                     case 3:
                         res = _a.sent();
@@ -362,7 +362,7 @@ var OffersModel = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        query = "UPDATE ".concat(this.tableName, " SET \n      title='").concat(body.title, "', \n      long_description='").concat(body.long_description, "', \n      short_description='").concat(body.short_description, "', \n      price='").concat(body.price, "'\n      WHERE uhash = '").concat(body.uhash, "' RETURNING *");
+                        query = "UPDATE ".concat(this.tableName, " SET \n      title='").concat(body.title, "', \n      long_description='").concat(body.long_description, "', \n      short_description='").concat(body.short_description, "', \n      price='").concat(body.price, "',\n      artist='").concat(body.artist, "',\n      medium='").concat(body.medium, "',\n      year='").concat(body.year, "',\n      dimension='").concat(body.dimension, "',\n      orientation='").concat(body.orientation, "'\n      WHERE uhash = '").concat(body.uhash, "' RETURNING *");
                         return [4 /*yield*/, db_1.client.query(query)];
                     case 2:
                         res = _a.sent();
