@@ -218,6 +218,7 @@ class OffersModel {
       error: '',
     };
     try {
+      //Just
       const query = `SELECT * FROM ${this.tableName} ORDER BY id DESC`;
       const res = await client.query(query);
       response.rows = parseImgURL(res.rows);
