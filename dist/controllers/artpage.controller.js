@@ -76,9 +76,23 @@ router.get('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void 
     var response;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, artpictures_model_1.OfferModel.fetchOffers(req.query.section)];
+            case 0:
+                if (!req.query.uhash) return [3 /*break*/, 2];
+                return [4 /*yield*/, artpictures_model_1.OfferModel.fetchOffer(req.query.uhash)];
             case 1:
                 response = _a.sent();
+                return [3 /*break*/, 6];
+            case 2:
+                if (!req.query.latest) return [3 /*break*/, 4];
+                return [4 /*yield*/, artpictures_model_1.OfferModel.getLatestOffers(8)];
+            case 3:
+                response = _a.sent();
+                return [3 /*break*/, 6];
+            case 4: return [4 /*yield*/, artpictures_model_1.OfferModel.fetchOffers(req.query.section)];
+            case 5:
+                response = _a.sent();
+                _a.label = 6;
+            case 6:
                 if (response.error) {
                     res.statusCode = 400;
                 }

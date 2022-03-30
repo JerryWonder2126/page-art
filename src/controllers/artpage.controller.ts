@@ -45,7 +45,14 @@ router.delete('/sections', async (req: any, res: any) => {
 });
 
 router.get('/offers/', async (req, res) => {
-  const response = await OfferModel.fetchOffers(req.query.section as string);
+  let response;
+  if (req.query.uhash) {
+    response = await OfferModel.fetchOffer(req.query.uhash as string);
+  } else if (req.query.latest) {
+    response = await OfferModel.getLatestOffers(8);
+  } else {
+    response = await OfferModel.fetchOffers(req.query.section as string);
+  }
 
   if (response.error) {
     res.statusCode = 400;

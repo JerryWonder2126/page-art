@@ -302,7 +302,7 @@ var OffersModel = /** @class */ (function () {
                         return [4 /*yield*/, db_1.client.query(query)];
                     case 2:
                         res = _a.sent();
-                        response.rows = (0, upload_image_service_1.parseImgURL)(res.rows, true);
+                        response.rows = (0, upload_image_service_1.parseImgURL)(res.rows);
                         return [3 /*break*/, 4];
                     case 3:
                         err_9 = _a.sent();
@@ -319,9 +319,47 @@ var OffersModel = /** @class */ (function () {
             });
         });
     };
-    OffersModel.prototype.deleteOffer = function (uhash) {
+    OffersModel.prototype.getLatestOffers = function (max_num) {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
             var response, query, res, err_10;
+            return (0, tslib_1.__generator)(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        response = {
+                            rows: [],
+                            error: '',
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        query = "SELECT * FROM ".concat(this.tableName, " ORDER BY id DESC");
+                        return [4 /*yield*/, db_1.client.query(query)];
+                    case 2:
+                        res = _a.sent();
+                        response.rows = (0, upload_image_service_1.parseImgURL)(res.rows);
+                        response.rows =
+                            response.rows.length < max_num
+                                ? response.rows
+                                : response.rows.slice(0, max_num);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_10 = _a.sent();
+                        if ('stack' in err_10) {
+                            response.error = err_10.stack;
+                        }
+                        else {
+                            response.error = JSON.stringify(err_10);
+                        }
+                        response.error = err_10.stack;
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    OffersModel.prototype.deleteOffer = function (uhash) {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
+            var response, query, res, err_11;
             return (0, tslib_1.__generator)(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -341,8 +379,8 @@ var OffersModel = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        err_10 = _a.sent();
-                        response.error = err_10.stack;
+                        err_11 = _a.sent();
+                        response.error = err_11.stack;
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/, response];
                 }
@@ -351,7 +389,7 @@ var OffersModel = /** @class */ (function () {
     };
     OffersModel.prototype.updateOffer = function (body) {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
-            var response, query, res, err_11;
+            var response, query, res, err_12;
             return (0, tslib_1.__generator)(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -371,8 +409,8 @@ var OffersModel = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        err_11 = _a.sent();
-                        response.error = err_11.stack;
+                        err_12 = _a.sent();
+                        response.error = err_12.stack;
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/, response];
                 }
@@ -381,7 +419,7 @@ var OffersModel = /** @class */ (function () {
     };
     OffersModel.prototype.updateImages = function (body, images) {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
-            var response, imageNames, deleteHandle, query, res, err_12;
+            var response, imageNames, deleteHandle, query, res, err_13;
             return (0, tslib_1.__generator)(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -418,8 +456,8 @@ var OffersModel = /** @class */ (function () {
                         }
                         return [3 /*break*/, 8];
                     case 7:
-                        err_12 = _a.sent();
-                        response.error = err_12.stack;
+                        err_13 = _a.sent();
+                        response.error = err_13.stack;
                         return [3 /*break*/, 8];
                     case 8: return [2 /*return*/, response];
                 }

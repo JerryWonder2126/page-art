@@ -199,7 +199,32 @@ class OffersModel {
     try {
       const query = `SELECT * FROM ${this.tableName} WHERE uhash = '${offer_hash}'`;
       const res = await client.query(query);
-      response.rows = parseImgURL(res.rows, true);
+      response.rows = parseImgURL(res.rows);
+    } catch (err: any) {
+      if ('stack' in err) {
+        response.error = err.stack;
+      } else {
+        response.error = JSON.stringify(err);
+      }
+      response.error = err.stack;
+    }
+
+    return response;
+  }
+
+  async getLatestOffers(max_num: number) {
+    const response: IParsedResponse = {
+      rows: [],
+      error: '',
+    };
+    try {
+      const query = `SELECT * FROM ${this.tableName} ORDER BY id DESC`;
+      const res = await client.query(query);
+      response.rows = parseImgURL(res.rows);
+      response.rows =
+        response.rows.length < max_num
+          ? response.rows
+          : response.rows.slice(0, max_num);
     } catch (err: any) {
       if ('stack' in err) {
         response.error = err.stack;
