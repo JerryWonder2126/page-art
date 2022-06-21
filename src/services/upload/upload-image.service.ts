@@ -1,6 +1,11 @@
 import {AzureService} from '../azure/azure.service';
 
 export async function saveImage(image: any): Promise<string> {
+  /**
+   * Saves a single image to AzureBlob Storage
+   * @param image - image file
+   * @returns - image name
+   */
   try {
     const azureHook = await init();
     const azureResponse = await azureHook.uploadToBlob(image);
@@ -16,6 +21,11 @@ export async function saveImage(image: any): Promise<string> {
 }
 
 export async function saveImageBatch(images: any[]): Promise<string[]> {
+  /**
+   * Stores a list of images to database
+   * @param images - a list of image files
+   * @returns the names of the images in a list
+   */
   try {
     const imagesPromise: Promise<string>[] = [];
     Object.keys(images).forEach((value, index) =>
@@ -33,6 +43,11 @@ export async function saveImageBatch(images: any[]): Promise<string[]> {
 }
 
 export async function updateSingleImage(image: any) {
+  /**
+   * Updates a single image, it simply saves a new image to AzureBlobStorage
+   * @param image - image file
+   * @returns name of the image
+   */
   try {
     return saveImage(image);
   } catch (err) {
@@ -45,6 +60,10 @@ export async function updateSingleImage(image: any) {
 }
 
 export async function deleteSingleImage(fileName: string) {
+  /**
+   * This deletes an image from AzureBlob Storage account
+   * @returns {boolean}
+   */
   try {
     const azureHook = await init();
     await azureHook.deleteImageFromBlob(fileName);
@@ -59,6 +78,10 @@ export async function deleteSingleImage(fileName: string) {
 }
 
 async function init() {
+  /**
+   * This establishes a connection to AzureBlob Storage account for this project
+   * @returns an object for connection to azure
+   */
   try {
     return await new AzureService(containerName, storageAccountName);
   } catch (err) {
@@ -73,9 +96,15 @@ async function init() {
 const storageAccountName = 'artwebstorage';
 const containerName = 'images';
 
-const IMG_URL_PREFIX = `https://${storageAccountName}.blob.core.windows.net/${containerName}/`;
+const IMG_URL_PREFIX = `https://${process.env.STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${process.env.CONTAINER_NAME}/`;
 
 export function parseImgURL(results: any[], singleImage = false) {
+  /**
+   * This adds image_url_prefix to the names of images in a response from the database
+   * @param results - result from query from database
+   * @param singleImage - true when rows in result contains single images, else, false
+   * @returns result with updated image names
+   */
   return results.map((val: any) => {
     if (singleImage) {
       val.imgurl = IMG_URL_PREFIX + val.imgurl;
@@ -89,5 +118,10 @@ export function parseImgURL(results: any[], singleImage = false) {
 }
 
 export function deparseImgURL(results: string[]): string[] {
+  /**
+   * This removes 'image_url_prefix' from the names of images in a response from the database
+   * @param results - result from query from database
+   * @returns result with updated image names
+   */
   return results.map((val: any) => val.replace(IMG_URL_PREFIX, ''));
 }

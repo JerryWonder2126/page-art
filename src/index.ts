@@ -25,9 +25,9 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // This enables CORS on API
 app.use(bodyParser.json());
-app.use(fileUpload());
+app.use(fileUpload()); // This enables file-uploads through forms
 app.use('/resources', router);
 
 app.listen(process.env.PORT || 12080);
