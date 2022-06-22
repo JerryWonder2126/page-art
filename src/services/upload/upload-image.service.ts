@@ -96,8 +96,6 @@ async function init() {
 const storageAccountName = 'artwebstorage';
 const containerName = 'images';
 
-const IMG_URL_PREFIX = `https://${process.env.STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${process.env.CONTAINER_NAME}/`;
-
 export function parseImgURL(results: any[], singleImage = false) {
   /**
    * This adds image_url_prefix to the names of images in a response from the database
@@ -105,6 +103,7 @@ export function parseImgURL(results: any[], singleImage = false) {
    * @param singleImage - true when rows in result contains single images, else, false
    * @returns result with updated image names
    */
+  const IMG_URL_PREFIX = `https://${process.env.STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${process.env.CONTAINER_NAME}/`;
   return results.map((val: any) => {
     if (singleImage) {
       val.imgurl = IMG_URL_PREFIX + val.imgurl;
@@ -123,5 +122,6 @@ export function deparseImgURL(results: string[]): string[] {
    * @param results - result from query from database
    * @returns result with updated image names
    */
+  const IMG_URL_PREFIX = `https://${process.env.STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${process.env.CONTAINER_NAME}/`;
   return results.map((val: any) => val.replace(IMG_URL_PREFIX, ''));
 }

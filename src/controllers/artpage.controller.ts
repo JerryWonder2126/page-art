@@ -91,6 +91,7 @@ router.post('/offers/', async (req: Request, res: Response) => {
   const body = JSON.parse(req.body.data);
   const images: any[] = [];
   const imgFiles = req['files'];
+  const presentYear = new Date();
   if (imgFiles) {
     Object.keys(imgFiles).forEach((key: any) => images.push(imgFiles[key]));
   }
@@ -103,7 +104,7 @@ router.post('/offers/', async (req: Request, res: Response) => {
   const section_hash = body.section_hash ? body.section_hash : '';
   const artist = body.artist ? body.artist : '';
   const medium = body.medium ? body.medium : '';
-  const year = body.year ? body.year : '';
+  const year = body.year ? body.year : presentYear.getFullYear();
   const dimension = body.dimension ? body.dimension : '';
   const orientation = body.orientation ? body.orientation : '';
   result = await OfferModel.createOffer(
@@ -122,6 +123,7 @@ router.post('/offers/', async (req: Request, res: Response) => {
   if (result.error) {
     res.statusCode = 404;
   }
+
   res.send(result);
 });
 
