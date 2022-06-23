@@ -55,6 +55,11 @@ exports.saveImageBatch = saveImageBatch;
 function updateSingleImage(image) {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         return (0, tslib_1.__generator)(this, function (_a) {
+            /**
+             * Updates a single image, it simply saves a new image to AzureBlobStorage
+             * @param image - image file
+             * @returns name of the image
+             */
             try {
                 return [2 /*return*/, saveImage(image)];
             }
@@ -114,9 +119,15 @@ function init() {
 }
 var storageAccountName = 'artwebstorage';
 var containerName = 'images';
-var IMG_URL_PREFIX = "https://".concat(storageAccountName, ".blob.core.windows.net/").concat(containerName, "/");
 function parseImgURL(results, singleImage) {
     if (singleImage === void 0) { singleImage = false; }
+    /**
+     * This adds image_url_prefix to the names of images in a response from the database
+     * @param results - result from query from database
+     * @param singleImage - true when rows in result contains single images, else, false
+     * @returns result with updated image names
+     */
+    var IMG_URL_PREFIX = "https://".concat(process.env.STORAGE_ACCOUNT_NAME, ".blob.core.windows.net/").concat(process.env.CONTAINER_NAME, "/");
     return results.map(function (val) {
         if (singleImage) {
             val.imgurl = IMG_URL_PREFIX + val.imgurl;
@@ -131,6 +142,12 @@ function parseImgURL(results, singleImage) {
 }
 exports.parseImgURL = parseImgURL;
 function deparseImgURL(results) {
+    /**
+     * This removes 'image_url_prefix' from the names of images in a response from the database
+     * @param results - result from query from database
+     * @returns result with updated image names
+     */
+    var IMG_URL_PREFIX = "https://".concat(process.env.STORAGE_ACCOUNT_NAME, ".blob.core.windows.net/").concat(process.env.CONTAINER_NAME, "/");
     return results.map(function (val) { return val.replace(IMG_URL_PREFIX, ''); });
 }
 exports.deparseImgURL = deparseImgURL;
