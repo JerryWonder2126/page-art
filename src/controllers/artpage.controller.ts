@@ -13,9 +13,9 @@ router.get('/sections/', async (req: Request, res: Response) => {
    */
   const result: IParsedResponse = await SectionModel.fetchSections();
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
-  res.send(result);
+  res.status(200).send(result);
 });
 
 router.post('/sections', async (req: Request, res: Response) => {
@@ -25,9 +25,9 @@ router.post('/sections', async (req: Request, res: Response) => {
   const imageFile = req['files'] ? req['files'].image : null;
   const result = await SectionModel.addSection(req.body.title, imageFile);
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
-  res.send(result);
+  res.status(201).send(result);
 });
 
 router.put('/sections/', async (req: Request, res: Response) => {
@@ -40,9 +40,9 @@ router.put('/sections/', async (req: Request, res: Response) => {
     image
   )) as IParsedResponse;
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
-  res.send(result);
+  res.status(201).send(result);
 });
 
 router.delete('/sections', async (req: Request, res: Response) => {
@@ -53,7 +53,7 @@ router.delete('/sections', async (req: Request, res: Response) => {
     req.query.section_hash as string
   );
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
   res.send(result);
 });
@@ -76,10 +76,10 @@ router.get('/offers/', async (req: Request, res: Response) => {
   }
 
   if (response.error) {
-    res.statusCode = 400;
+    res.status(404);
   }
 
-  res.send(response);
+  res.status(200).send(response);
 });
 
 router.post('/offers/', async (req: Request, res: Response) => {
@@ -121,7 +121,7 @@ router.post('/offers/', async (req: Request, res: Response) => {
     orientation
   );
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
 
   res.send(result);
@@ -141,7 +141,7 @@ router.put('/offers/', async (req: Request, res: Response) => {
     images
   )) as IParsedResponse;
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
   res.send(result);
 });
@@ -150,7 +150,7 @@ router.delete('/offers/', async (req: Request, res: Response) => {
   // Delete an offer
   const result = await OfferModel.deleteOffer(req.query.offer_hash as string);
   if (result.error) {
-    res.statusCode = 404;
+    res.status(404);
   }
   res.send(result);
 });
@@ -178,7 +178,7 @@ router.post('/social/', async (req: Request, res: Response) => {
     // res.statusCode = 301;
     result.rows.push(response.message);
   } catch (err: any) {
-    res.statusCode = 400;
+    res.status(404);
     result.error += `\n${err}`;
   }
   res.send(result);

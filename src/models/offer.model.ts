@@ -7,6 +7,7 @@ import {
   deleteSingleImage,
   deparseImgURL,
 } from '../services/upload/upload-image.service';
+import {handleError} from './helpers';
 
 class OffersModel {
   IMG_URL_PREFIX: any;
@@ -42,7 +43,7 @@ class OffersModel {
       const res = await client.query(query);
       response.rows = res.rows;
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -62,12 +63,7 @@ class OffersModel {
       const res = await client.query(query);
       response.rows = parseImgURL(res.rows); // Add image_url_prefix to image names in result
     } catch (err: any) {
-      if ('stack' in err) {
-        response.error = err.stack;
-      } else {
-        response.error = JSON.stringify(err);
-      }
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -87,12 +83,7 @@ class OffersModel {
       const res = await client.query(query);
       response.rows = parseImgURL(res.rows);
     } catch (err: any) {
-      if ('stack' in err) {
-        response.error = err.stack;
-      } else {
-        response.error = JSON.stringify(err);
-      }
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -116,12 +107,7 @@ class OffersModel {
           ? response.rows
           : response.rows.slice(0, max_num);
     } catch (err: any) {
-      if ('stack' in err) {
-        response.error = err.stack;
-      } else {
-        response.error = JSON.stringify(err);
-      }
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -143,7 +129,7 @@ class OffersModel {
         response.rows = [{message: 'Offer deleted successfully'}];
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -175,7 +161,7 @@ class OffersModel {
         response.rows = res.rows;
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -215,7 +201,7 @@ class OffersModel {
         response.rows = res.rows;
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;

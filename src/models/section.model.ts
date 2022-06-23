@@ -9,6 +9,7 @@ import {
   deleteSingleImage,
   deparseImgURL,
 } from '../services/upload/upload-image.service';
+import {handleError} from './helpers';
 
 class SectionsModel {
   // tableName is the name of this model's table in the database
@@ -43,7 +44,7 @@ class SectionsModel {
       const res = await client.query(query);
       response.rows = parseImgURL(res.rows, true); // Add image_url_prefix to images name in result
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -67,7 +68,7 @@ class SectionsModel {
       const res = await client.query(query);
       response.rows = res.rows;
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -88,7 +89,7 @@ class SectionsModel {
       const res = await client.query(query);
       response.rows = res.rows;
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -117,7 +118,7 @@ class SectionsModel {
         response.rows = res.rows;
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
@@ -160,7 +161,7 @@ class SectionsModel {
         response.rows = [{message: 'Section deleted successfully'}];
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
