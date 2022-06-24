@@ -1,141 +1,17 @@
 import {v4} from 'uuid';
 import {client} from '../db';
 import {IParsedResponse} from './general.interface';
-import {AzureService} from '../services/azure/azure.service';
 import {
-  saveImage,
   saveImageBatch,
-  updateSingleImage,
   parseImgURL,
   deleteSingleImage,
   deparseImgURL,
 } from '../services/upload/upload-image.service';
-
-class SectionsModel {
-  constructor(public tableName: string = 'sections') {}
-
-  async init() {
-    try {
-      return await new AzureService('images', 'culdevtest');
-    } catch (err) {
-      throw new Error(
-        JSON.stringify({
-          stack: "Couldn't connect to Azure Server, please try again.",
-        })
-      );
-    }
-  }
-
-  async fetchSections() {
-    const response: IParsedResponse = {
-      rows: [],
-      error: '',
-    };
-    try {
-      const query = `SELECT * FROM ${this.tableName}`;
-      const res = await client.query(query);
-      response.rows = parseImgURL(res.rows, true);
-    } catch (err: any) {
-      response.error = err.stack;
-    }
-
-    return response;
-  }
-
-  async addSection(title: string, image: any) {
-    const response: IParsedResponse = {
-      rows: [],
-      error: '',
-    };
-    try {
-      const azureResponse = await saveImage(image);
-      const query = `INSERT INTO ${
-        this.tableName
-      } (title, imgurl, uhash) VALUES ( '${title}', '${azureResponse}', '${v4()}') RETURNING *`;
-      const res = await client.query(query);
-      response.rows = res.rows;
-    } catch (err: any) {
-      response.error = err.stack;
-    }
-
-    return response;
-  }
-
-  async updateTitle(uhash: string, title: string) {
-    const response: IParsedResponse = {
-      rows: [],
-      error: '',
-    };
-    try {
-      const query = `UPDATE ${this.tableName} SET title = '${title}' WHERE uhash = '${uhash}' RETURNING *`;
-      const res = await client.query(query);
-      response.rows = res.rows;
-    } catch (err: any) {
-      response.error = err.stack;
-    }
-
-    return response;
-  }
-
-  async updateImgurl(body: any, image: any) {
-    const response: IParsedResponse = {
-      rows: [],
-      error: '',
-    };
-    try {
-      const deleteHandle = await deleteSingleImage(
-        deparseImgURL([body.value])[0]
-      );
-      if (deleteHandle) {
-        const azureResponse = await updateSingleImage(image);
-        const query = `UPDATE ${this.tableName} SET imgurl = '${azureResponse}' WHERE uhash = '${body.uhash}' RETURNING *`;
-        const res = await client.query(query);
-        response.rows = res.rows;
-      }
-    } catch (err: any) {
-      response.error = err.stack;
-    }
-
-    return response;
-  }
-
-  async update(body: any, file?: any) {
-    let response: IParsedResponse = {
-      rows: [],
-      error: '',
-    };
-    if (body.type === 'title') {
-      response = await this.updateTitle(body.uhash, body.value);
-    } else if (body.type === 'imgurl') {
-      response = await this.updateImgurl(body, file);
-    } else {
-      response.error = 'Input error - undefined update type for section';
-    }
-
-    return response;
-  }
-
-  async deleteSection(uhash: string) {
-    const response: IParsedResponse = {
-      rows: [],
-      error: '',
-    };
-    try {
-      const query = `DELETE FROM ${this.tableName} WHERE uhash = '${uhash}'`;
-      const res = await client.query(query);
-      if (res) {
-        response.rows = [{message: 'Section deleted successfully'}];
-      }
-    } catch (err: any) {
-      response.error = err.stack;
-    }
-
-    return response;
-  }
-}
+import {handleError} from './helpers';
 
 class OffersModel {
   IMG_URL_PREFIX: any;
+  // tableName is model's table name in the database
   constructor(public tableName: string = 'offers') {}
 
   async createOffer(
@@ -151,12 +27,15 @@ class OffersModel {
     dimension: string,
     orientation: string
   ) {
+    /**
+     * Creates an offer
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
     };
     try {
-      const azureResponse = await saveImageBatch(images);
+      const azureResponse = await saveImageBatch(images); // Save images first before adding to record
       const parsedImgURL = `{${azureResponse}}`;
       const query = `INSERT INTO ${this.tableName} (
         title, short_description, long_description, price, imgurl, uhash, section_hash, artist, medium, year, dimension, orientation)
@@ -164,13 +43,17 @@ class OffersModel {
       const res = await client.query(query);
       response.rows = res.rows;
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async fetchOffers(section_hash: string) {
+    /**
+     * Fetch all offers under a particular section
+     * @param section_hash - unique hash id for section
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
@@ -178,20 +61,19 @@ class OffersModel {
     try {
       const query = `SELECT * FROM ${this.tableName} WHERE section_hash = '${section_hash}'`;
       const res = await client.query(query);
-      response.rows = parseImgURL(res.rows);
+      response.rows = parseImgURL(res.rows); // Add image_url_prefix to image names in result
     } catch (err: any) {
-      if ('stack' in err) {
-        response.error = err.stack;
-      } else {
-        response.error = JSON.stringify(err);
-      }
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async fetchOffer(offer_hash: string) {
+    /**
+     * Fecth an offer
+     * @param offer_hash - unique hash id for offer
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
@@ -201,24 +83,22 @@ class OffersModel {
       const res = await client.query(query);
       response.rows = parseImgURL(res.rows);
     } catch (err: any) {
-      if ('stack' in err) {
-        response.error = err.stack;
-      } else {
-        response.error = JSON.stringify(err);
-      }
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async getLatestOffers(max_num: number) {
+    /**
+     * Fetches offers from database but limits result to max_num
+     * @param max_num - number of offers to return
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
     };
     try {
-      //Just
       const query = `SELECT * FROM ${this.tableName} ORDER BY id DESC`;
       const res = await client.query(query);
       response.rows = parseImgURL(res.rows);
@@ -227,18 +107,17 @@ class OffersModel {
           ? response.rows
           : response.rows.slice(0, max_num);
     } catch (err: any) {
-      if ('stack' in err) {
-        response.error = err.stack;
-      } else {
-        response.error = JSON.stringify(err);
-      }
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async deleteOffer(uhash: string) {
+    /**
+     * Deletes offer marked by unique hash
+     * @param uhash - offer's unique hash
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
@@ -250,13 +129,17 @@ class OffersModel {
         response.rows = [{message: 'Offer deleted successfully'}];
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async updateOffer(body: any) {
+    /**
+     * Updates an offer
+     * @param body - object containing all necessary info needed for update
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
@@ -278,13 +161,18 @@ class OffersModel {
         response.rows = res.rows;
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async updateImages(body: any, images?: any[]) {
+    /**
+     * Updates images attached to an offer
+     * @param body - an object containing the old names of offer's image
+     * @param images - list of images to add to offer (optional)
+     */
     const response: IParsedResponse = {
       rows: [],
       error: '',
@@ -296,13 +184,13 @@ class OffersModel {
         imageNames = await saveImageBatch(images);
         imageNames.push(...deparseImgURL(body.value)); // Add previous names to the list too
       } else {
+        // This holds when an image gets deleted, not during uploads
         // This will delete nameToDelete from pictures in model and update model's pictures with updateWith
         const deleteHandle = await deleteSingleImage(
           deparseImgURL(body.nameToDelete)[0]
         );
         if (deleteHandle) {
-          // This holds when an image gets deleted, not during uploads
-          imageNames = deparseImgURL(body.updateWith); // images not given implies there's no need to upload, names have already been provided
+          imageNames = deparseImgURL(body.updateWith); // images not given implies there's no need to upload, names have already been provided (in body)
         }
       }
       const query = `UPDATE ${this.tableName} SET 
@@ -313,13 +201,19 @@ class OffersModel {
         response.rows = res.rows;
       }
     } catch (err: any) {
-      response.error = err.stack;
+      handleError(response, err);
     }
 
     return response;
   }
 
   async update(body: any, type: string, images?: any) {
+    /**
+     * This updates an offer based on type
+     * @param body - an object containing required info for image update
+     * @param type - possible values 'text' & 'imgurl'
+     * @param images - list of image file to be added to file
+     */
     let response: IParsedResponse = {
       rows: [],
       error: '',
@@ -342,7 +236,6 @@ class OffersModel {
   }
 }
 
-const SectionModel = new SectionsModel();
 const OfferModel = new OffersModel();
 
-export {SectionModel, OfferModel};
+export {OfferModel};

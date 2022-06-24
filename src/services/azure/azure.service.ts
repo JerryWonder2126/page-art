@@ -4,6 +4,7 @@ import {v1 as uuidv1} from 'uuid';
 import {IAzureResponse} from './azure.interface';
 
 export class AzureService {
+  // Basically deals with establishing a connection to Azure Storage Account
   private IMG_URL_PREFIX = `https://${this.storageAccountName}.blob.core.windows.net/${this.containerName}/`;
 
   get imgUrlPrefix() {
@@ -37,7 +38,10 @@ export class AzureService {
   }
 
   async getContainerClient(containerName?: string) {
-    // Get a reference to a container
+    /**
+     * Get a reference to a container
+     * @param containerName - name of contianer (optional), if not given, connects to default container
+     */
     try {
       return containerName
         ? await (
@@ -66,6 +70,11 @@ export class AzureService {
   }
 
   async uploadToBlob(file: any, containerClient?: ContainerClient) {
+    /**
+     * Saves a new image to container
+     * @param file - image file to be uploaded to container
+     * @param containerClient - an object that is already connected to the container (optional)
+     */
     const response: IAzureResponse = {name: uuidv1()};
     try {
       if (!containerClient) {
@@ -93,6 +102,11 @@ export class AzureService {
     fileName: string,
     containerClient?: ContainerClient
   ) {
+    /**
+     * Deletes an image from container
+     * @param fileName - the name of the image to be deleted
+     * @param containerClient - an obj connected to the container (optional)
+     */
     const response: IAzureResponse = {name: uuidv1()};
     try {
       if (!containerClient) {

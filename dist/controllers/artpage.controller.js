@@ -3,22 +3,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 var tslib_1 = require("tslib");
 var express_1 = (0, tslib_1.__importDefault)(require("express"));
-var artpictures_model_1 = require("../models/artpictures.model");
+var offer_model_1 = require("../models/offer.model");
+var section_model_1 = require("../models/section.model");
 var social_service_1 = require("../services/social/social.service");
-// const {title} = require('process');
 var router = express_1.default.Router();
 exports.router = router;
 router.get('/sections/', function (req, res) { return (0, tslib_1.__awaiter)(void 0, void 0, void 0, function () {
     var result;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, artpictures_model_1.SectionModel.fetchSections()];
+            case 0: return [4 /*yield*/, section_model_1.SectionModel.fetchSections()];
             case 1:
                 result = _a.sent();
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
-                res.send(result);
+                res.status(200).send(result);
                 return [2 /*return*/];
         }
     });
@@ -28,14 +28,14 @@ router.post('/sections', function (req, res) { return (0, tslib_1.__awaiter)(voi
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
             case 0:
-                imageFile = req['files'].image;
-                return [4 /*yield*/, artpictures_model_1.SectionModel.addSection(req.body.title, imageFile)];
+                imageFile = req['files'] ? req['files'].image : null;
+                return [4 /*yield*/, section_model_1.SectionModel.addSection(req.body.title, imageFile)];
             case 1:
                 result = _a.sent();
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
-                res.send(result);
+                res.status(201).send(result);
                 return [2 /*return*/];
         }
     });
@@ -46,13 +46,13 @@ router.put('/sections/', function (req, res) { return (0, tslib_1.__awaiter)(voi
         switch (_a.label) {
             case 0:
                 image = req['files'] ? req['files'].image : undefined;
-                return [4 /*yield*/, artpictures_model_1.SectionModel.update(req.body, image)];
+                return [4 /*yield*/, section_model_1.SectionModel.update(req.body, image)];
             case 1:
                 result = (_a.sent());
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
-                res.send(result);
+                res.status(201).send(result);
                 return [2 /*return*/];
         }
     });
@@ -61,11 +61,11 @@ router.delete('/sections', function (req, res) { return (0, tslib_1.__awaiter)(v
     var result;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, artpictures_model_1.SectionModel.deleteSection(req.query.section_hash)];
+            case 0: return [4 /*yield*/, section_model_1.SectionModel.deleteSection(req.query.section_hash)];
             case 1:
                 result = _a.sent();
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
                 res.send(result);
                 return [2 /*return*/];
@@ -73,36 +73,39 @@ router.delete('/sections', function (req, res) { return (0, tslib_1.__awaiter)(v
     });
 }); });
 router.get('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void 0, void 0, void 0, function () {
-    var response;
+    var response, MAX_NUM;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
             case 0:
                 if (!req.query.uhash) return [3 /*break*/, 2];
-                return [4 /*yield*/, artpictures_model_1.OfferModel.fetchOffer(req.query.uhash)];
+                return [4 /*yield*/, offer_model_1.OfferModel.fetchOffer(req.query.uhash)];
             case 1:
+                // Get offer by unique hash id
                 response = _a.sent();
                 return [3 /*break*/, 6];
             case 2:
                 if (!req.query.latest) return [3 /*break*/, 4];
-                return [4 /*yield*/, artpictures_model_1.OfferModel.getLatestOffers(8)];
+                MAX_NUM = 8;
+                return [4 /*yield*/, offer_model_1.OfferModel.getLatestOffers(MAX_NUM)];
             case 3:
                 response = _a.sent();
                 return [3 /*break*/, 6];
-            case 4: return [4 /*yield*/, artpictures_model_1.OfferModel.fetchOffers(req.query.section)];
+            case 4: return [4 /*yield*/, offer_model_1.OfferModel.fetchOffers(req.query.section)];
             case 5:
+                // Get all offers under a particular section
                 response = _a.sent();
                 _a.label = 6;
             case 6:
                 if (response.error) {
-                    res.statusCode = 400;
+                    res.status(404);
                 }
-                res.send(response);
+                res.status(200).send(response);
                 return [2 /*return*/];
         }
     });
 }); });
 router.post('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void 0, void 0, void 0, function () {
-    var result, body, images;
+    var result, body, images, imgFiles, presentYear, title, short_description, long_description, price, section_hash, artist, medium, year, dimension, orientation;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -112,12 +115,28 @@ router.post('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void
                 };
                 body = JSON.parse(req.body.data);
                 images = [];
-                Object.keys(req['files']).forEach(function (key) { return images.push(req.files[key]); });
-                return [4 /*yield*/, artpictures_model_1.OfferModel.createOffer(body.title, body.short_description, body.long_description, body.price, images, body.section_hash, body.artist, body.medium, body.year, body.dimension, body.orientation)];
+                imgFiles = req['files'];
+                presentYear = new Date();
+                if (imgFiles) {
+                    Object.keys(imgFiles).forEach(function (key) { return images.push(imgFiles[key]); });
+                }
+                title = body.title ? body.title : '';
+                short_description = body.short_description
+                    ? body.short_description
+                    : '';
+                long_description = body.long_description ? body.long_description : '';
+                price = body.price ? body.price : '';
+                section_hash = body.section_hash ? body.section_hash : '';
+                artist = body.artist ? body.artist : '';
+                medium = body.medium ? body.medium : '';
+                year = body.year ? body.year : presentYear.getFullYear();
+                dimension = body.dimension ? body.dimension : '';
+                orientation = body.orientation ? body.orientation : '';
+                return [4 /*yield*/, offer_model_1.OfferModel.createOffer(title, short_description, long_description, price, images, section_hash, artist, medium, year, dimension, orientation)];
             case 1:
                 result = _a.sent();
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
                 res.send(result);
                 return [2 /*return*/];
@@ -125,22 +144,21 @@ router.post('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void
     });
 }); });
 router.put('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(void 0, void 0, void 0, function () {
-    var images, body, result;
+    var images, imgFiles, body, result;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
             case 0:
                 images = [];
-                if (req['files']) {
-                    Object.keys(req['files']).forEach(function (key) {
-                        return images.push(req.files[key]);
-                    });
+                imgFiles = req['files'];
+                if (imgFiles) {
+                    Object.keys(imgFiles).forEach(function (key) { return images.push(imgFiles[key]); });
                 }
                 body = JSON.parse(req.body.data);
-                return [4 /*yield*/, artpictures_model_1.OfferModel.update(body, req.query.type, images)];
+                return [4 /*yield*/, offer_model_1.OfferModel.update(body, req.query.type, images)];
             case 1:
                 result = (_a.sent());
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
                 res.send(result);
                 return [2 /*return*/];
@@ -151,11 +169,11 @@ router.delete('/offers/', function (req, res) { return (0, tslib_1.__awaiter)(vo
     var result;
     return (0, tslib_1.__generator)(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, artpictures_model_1.OfferModel.deleteOffer(req.query.offer_hash)];
+            case 0: return [4 /*yield*/, offer_model_1.OfferModel.deleteOffer(req.query.offer_hash)];
             case 1:
                 result = _a.sent();
                 if (result.error) {
-                    res.statusCode = 404;
+                    res.status(404);
                 }
                 res.send(result);
                 return [2 /*return*/];
@@ -198,7 +216,7 @@ router.post('/social/', function (req, res) { return (0, tslib_1.__awaiter)(void
                 return [3 /*break*/, 6];
             case 5:
                 err_1 = _a.sent();
-                res.statusCode = 400;
+                res.status(404);
                 result.error += "\n".concat(err_1);
                 return [3 /*break*/, 6];
             case 6:

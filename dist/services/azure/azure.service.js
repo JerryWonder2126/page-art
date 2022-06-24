@@ -9,6 +9,7 @@ var AzureService = /** @class */ (function () {
     function AzureService(containerName, storageAccountName) {
         this.containerName = containerName;
         this.storageAccountName = storageAccountName;
+        // Basically deals with establishing a connection to Azure Storage Account
         this.IMG_URL_PREFIX = "https://".concat(this.storageAccountName, ".blob.core.windows.net/").concat(this.containerName, "/");
         this.AZURE_STORAGE_CONNECTION_STRING = process.env
             .AZURE_STORAGE_CONNECTION_STRING;

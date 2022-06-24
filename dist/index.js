@@ -23,9 +23,9 @@ var corsOptions = {
     },
     optionsSuccessStatus: 200,
 };
-app.use((0, cors_1.default)(corsOptions));
+app.use((0, cors_1.default)(corsOptions)); // This enables CORS on API
 app.use(body_parser_1.default.json());
-app.use((0, express_fileupload_1.default)());
+app.use((0, express_fileupload_1.default)()); // This enables file-uploads through forms
 app.use('/resources', artpage_controller_1.router);
 app.listen(process.env.PORT || 12080);
 //# sourceMappingURL=index.js.map
