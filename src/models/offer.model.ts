@@ -1,13 +1,13 @@
 import {v4} from 'uuid';
 import {client} from '../db';
-import {IParsedResponse} from './general.interface';
+import {IParsedResponse} from '../helpers/general.interface';
 import {
   saveImageBatch,
   parseImgURL,
   deleteSingleImage,
   deparseImgURL,
 } from '../services/upload/upload-image.service';
-import {handleError} from './helpers';
+import {handleError} from '../helpers/helpers';
 
 class OffersModel {
   IMG_URL_PREFIX: any;
@@ -236,6 +236,4 @@ class OffersModel {
   }
 }
 
-const OfferModel = new OffersModel();
-
-export {OfferModel};
+export default new OffersModel();

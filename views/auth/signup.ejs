@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/auth/base.css">
+</head>
+<body>
+    <main>
+        <form method="post">
+            <div class="">
+                <h1>Signup</h1>
+                <p>Signup with your credentials to gain access.</p>
+            </div>
+            <div class="">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+            <div class="">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" required>
+            </div>
+            <div class="d-flex justify-content-between">
+                <p>Already have an account? <a href="/api/v1/auth/">Sign in.</a></p>
+                <input type="submit" class="btn btn-primary" value="Add User">
+            </div>
+            <div class="text-center">
+                <p>&COPY;ArtAPI 2022. All rights reserved.</p>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
