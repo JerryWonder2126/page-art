@@ -1,6 +1,6 @@
 import {v4} from 'uuid';
 import {client} from '../db';
-import {IParsedResponse} from '../helpers/general.interface';
+import {IOffer, IParsedResponse} from '../helpers/general.interface';
 import {
   saveImageBatch,
   parseImgURL,
@@ -14,19 +14,63 @@ class OffersModel {
   // tableName is model's table name in the database
   constructor(public tableName: string = 'offers') {}
 
-  async createOffer(
-    title: string,
-    short_description: string,
-    long_description: string,
-    price: string,
-    images: any[],
-    section_hash: string,
-    artist: string,
-    medium: string,
-    year: number,
-    dimension: string,
-    orientation: string
-  ) {
+  getOfferObject(body: any) {
+    const defaults: IOffer = {
+      title: '',
+      short_description: '',
+      long_description: '',
+      price: 0,
+      section_hash: '',
+      artist: '',
+      medium: '',
+      year: new Date().getFullYear(),
+      dimension: '',
+      orientation: '',
+      status: 'on sale',
+    };
+    return {
+      ...defaults,
+      ...body,
+    } as IOffer;
+  }
+
+  // async createOffer(
+  //   title: string,
+  //   short_description: string,
+  //   long_description: string,
+  //   price: string,
+  //   images: any[],
+  //   section_hash: string,
+  //   artist: string,
+  //   medium: string,
+  //   year: number,
+  //   dimension: string,
+  //   orientation: string,
+  //   status: string
+  // ) {
+  //   /**
+  //    * Creates an offer
+  //    */
+  //   const response: IParsedResponse = {
+  //     rows: [],
+  //     error: '',
+  //   };
+  //   try {
+  //     const azureResponse = await saveImageBatch(images); // Save images first before adding to record
+  //     const parsedImgURL = `{${azureResponse}}`;
+  //     const query = `INSERT INTO ${this.tableName} (
+  //       title, short_description, long_description, price, imgurl, uhash, section_hash, artist, medium, year, dimension, orientation, status)
+  //       VALUES ('${title}', '${short_description}','${long_description}', '${price}', '${parsedImgURL}', '${v4()}', '${section_hash}', '${artist}', '${medium}', '${year}', '${dimension}', '${orientation}', '${status}') RETURNING *;`;
+  //     const res = await client.query(query);
+  //     response.rows = res.rows;
+  //   } catch (err: any) {
+  //     handleError(response, err);
+  //   }
+
+  //   return response;
+  // }
+
+  async createOffer(body: any, images: any[]) {
     /**
      * Creates an offer
      */
@@ -35,11 +79,18 @@ class OffersModel {
       error: '',
     };
     try {
+      const offer = this.getOfferObject(body);
       const azureResponse = await saveImageBatch(images); // Save images first before adding to record
       const parsedImgURL = `{${azureResponse}}`;
       const query = `INSERT INTO ${this.tableName} (
-        title, short_description, long_description, price, imgurl, uhash, section_hash, artist, medium, year, dimension, orientation)
-        VALUES ('${title}', '${short_description}','${long_description}', '${price}', '${parsedImgURL}', '${v4()}', '${section_hash}', '${artist}', '${medium}', '${year}', '${dimension}', '${orientation}') RETURNING *;`;
+        title, short_description, long_description, price, imgurl, uhash, section_hash, artist, medium, year, dimension, orientation, status)
+        VALUES ('${offer.title}', '${offer.short_description}','${
+        offer.long_description
+      }', '${offer.price}', '${parsedImgURL}', '${v4()}', '${
+        offer.section_hash
+      }', '${offer.artist}', '${offer.medium}', '${offer.year}', '${
+        offer.dimension
+      }', '${offer.orientation}', '${offer.status}') RETURNING *;`;
       const res = await client.query(query);
       response.rows = res.rows;
     } catch (err: any) {
@@ -145,16 +196,18 @@ class OffersModel {
       error: '',
     };
     try {
+      const offer = this.getOfferObject(body);
       const query = `UPDATE ${this.tableName} SET 
-      title='${body.title}', 
-      long_description='${body.long_description}', 
-      short_description='${body.short_description}', 
-      price='${body.price}',
-      artist='${body.artist}',
-      medium='${body.medium}',
-      year='${body.year}',
-      dimension='${body.dimension}',
-      orientation='${body.orientation}'
+      title='${offer.title}', 
+      long_description='${offer.long_description}', 
+      short_description='${offer.short_description}', 
+      price='${offer.price}',
+      artist='${offer.artist}',
+      medium='${offer.medium}',
+      year='${offer.year}',
+      dimension='${offer.dimension}',
+      orientation='${offer.orientation}',
+      status='${offer.status}'
       WHERE uhash = '${body.uhash}' RETURNING *`;
       const res = await client.query(query);
       if (res) {

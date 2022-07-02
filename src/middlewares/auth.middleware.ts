@@ -14,7 +14,7 @@ export const bounceUnathenticated = (
   const authenticated = authState(req);
   let targetURL = req.originalUrl.split('?')[0]; // The first value is the main part of the url i.e without get parameters
   targetURL = targetURL.replace(conf.API_BASE_ENDPOINT, ''); // Strip off API_BASE_ENDPOINT, we only need the specific endpoint
-  const whitelist = ['/', '/status']; // Endpoints that do not need authentication
+  const whitelist = ['/']; // Endpoints that do not need authentication
   if (whitelist.indexOf(targetURL) !== -1 || authenticated) {
     return next();
   }
@@ -39,19 +39,6 @@ export const protectPOST = (
   }
 };
 
-export const setSession = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('x-access-token');
-  console.log('token', token);
-  if (token) {
-    const authDetail = jwt.verify(token, process.env.COOKIE_SECRET as string);
-    console.log(authDetail);
-    // console.log(token);
-    return next();
-  } else {
-    bounceUnathenticated(req, res, next);
-  }
-};
-
 const authState = (req: Request) => {
   try {
     const token = req.header('x-access-token');
@@ -61,7 +48,6 @@ const authState = (req: Request) => {
     const authDetail = jwt.verify(token, process.env.COOKIE_SECRET as string);
     return (<IAuthToken>authDetail).authenticated;
   } catch (err: any) {
-    console.log(err.message);
     return false;
   }
 };

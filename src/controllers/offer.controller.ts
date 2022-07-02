@@ -37,35 +37,38 @@ router.post('/', async (req: Request, res: Response) => {
   const body = JSON.parse(req.body.data);
   const images: any[] = [];
   const imgFiles = req['files'];
-  const presentYear = new Date();
+  // const presentYear = new Date();
   if (imgFiles) {
     Object.keys(imgFiles).forEach((key: any) => images.push(imgFiles[key]));
   }
-  const title = body.title ? body.title : '';
-  const short_description = body.short_description
-    ? body.short_description
-    : '';
-  const long_description = body.long_description ? body.long_description : '';
-  const price = body.price ? body.price : '';
-  const section_hash = body.section_hash ? body.section_hash : '';
-  const artist = body.artist ? body.artist : '';
-  const medium = body.medium ? body.medium : '';
-  const year = body.year ? body.year : presentYear.getFullYear();
-  const dimension = body.dimension ? body.dimension : '';
-  const orientation = body.orientation ? body.orientation : '';
-  result = await OfferModel.createOffer(
-    title,
-    short_description,
-    long_description,
-    price,
-    images,
-    section_hash,
-    artist,
-    medium,
-    year,
-    dimension,
-    orientation
-  );
+  // const title = body.title ? body.title : '';
+  // const short_description = body.short_description
+  //   ? body.short_description
+  //   : '';
+  // const long_description = body.long_description ? body.long_description : '';
+  // const price = body.price ? body.price : '';
+  // const section_hash = body.section_hash ? body.section_hash : '';
+  // const artist = body.artist ? body.artist : '';
+  // const medium = body.medium ? body.medium : '';
+  // const year = body.year ? body.year : presentYear.getFullYear();
+  // const dimension = body.dimension ? body.dimension : '';
+  // const orientation = body.orientation ? body.orientation : '';
+  // const status = body.status ? body.status : 'on sale';
+  // result = await OfferModel.createOffer(
+  //   title,
+  //   short_description,
+  //   long_description,
+  //   price,
+  //   images,
+  //   section_hash,
+  //   artist,
+  //   medium,
+  //   year,
+  //   dimension,
+  //   orientation,
+  //   status
+  // );
+  result = await OfferModel.createOffer(body, images);
   if (result.error) {
     res.status(404);
   }
