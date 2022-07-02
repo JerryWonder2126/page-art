@@ -63,16 +63,4 @@ router.post('/signup', async (req: Request, res: Response) => {
   return res.render('auth/signup.ejs');
 });
 
-router.post('/status/:email', async (req: Request, res: Response) => {
-  /**
-   * To get authentication status
-   */
-  const token = await User.getAccessToken(req.params['email']);
-  const authDetail = jwt.verify(token, process.env.COOKIE_SECRET as string);
-  console.log(authDetail);
-  res.send({
-    active: req.session ? true : false,
-  });
-});
-
 export default router;
