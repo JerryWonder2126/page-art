@@ -1,23 +1,13 @@
 import {Client} from 'pg';
 
-let client: Client;
+const sslOptions = {
+  rejectUnauthorized: false,
+};
 
-if (process.env.DATABASE_URL) {
-  client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
-} else {
-  client = new Client({
-    user: process.env.PGUSER || 'localhost',
-    host: process.env.PGHOST || 'localhost',
-    database: process.env.PGDATABASE || 'artpage',
-    password: process.env.PGPASS || 'localhost',
-    port: Number(process.env.PGPORT) || 5432,
-  });
-}
+const client: Client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DEVELOPMENT_MODE ? false : sslOptions,
+});
 
 client.connect().then(() => console.log('Connected'));
 

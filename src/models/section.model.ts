@@ -1,6 +1,6 @@
 import {v4} from 'uuid';
 import {client} from '../db';
-import {IParsedResponse} from './general.interface';
+import {IParsedResponse} from '../helpers/general.interface';
 import {AzureService} from '../services/azure/azure.service';
 import {
   saveImage,
@@ -9,7 +9,7 @@ import {
   deleteSingleImage,
   deparseImgURL,
 } from '../services/upload/upload-image.service';
-import {handleError} from './helpers';
+import {handleError} from '../helpers/helpers';
 
 class SectionsModel {
   // tableName is the name of this model's table in the database
@@ -168,6 +168,4 @@ class SectionsModel {
   }
 }
 
-const SectionModel = new SectionsModel();
-
-export {SectionModel};
+export default new SectionsModel();

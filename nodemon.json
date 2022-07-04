@@ -3,6 +3,6 @@
     "ext": ".ts, .js",
     "ignore": [],
     "execMap": {
-        "ts": "npx ts-node"
+        "ts": "npx ts-node -T"
     }
   }

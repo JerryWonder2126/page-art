@@ -6,7 +6,7 @@ var uuid_1 = require("uuid");
 var db_1 = require("../db");
 var azure_service_1 = require("../services/azure/azure.service");
 var upload_image_service_1 = require("../services/upload/upload-image.service");
-var helpers_1 = require("./helpers");
+var helpers_1 = require("../helpers/helpers");
 var SectionsModel = /** @class */ (function () {
     // tableName is the name of this model's table in the database
     function SectionsModel(tableName) {

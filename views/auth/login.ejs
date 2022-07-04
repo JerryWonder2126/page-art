@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/auth/base.css">
+</head>
+<body>
+    <main>
+        <form method="post">
+            <div class="">
+                <h1>Login</h1>
+                <p>Enter your credentials to gain access.</p>
+            </div>
+            <div>
+                <% if (error) { %>
+                    <p class="text-danger text-center"><%= error %></p>
+                <% } %>
+            </div>
+            <div class="">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" value="<%= form.email %>" name="email" id="email" >
+            </div>
+            <div class="">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" >
+            </div>
+            <div class="d-flex justify-content-between">
+                <p>Forgot password? <a href="#">Reset it.</a></p>
+                <input type="submit" class="btn btn-primary" value="login">
+            </div>
+            <div class="text-center">
+                <p>&COPY;ArtAPI 2022. All rights reserved.</p>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

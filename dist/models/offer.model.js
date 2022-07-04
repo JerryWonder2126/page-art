@@ -5,7 +5,7 @@ var tslib_1 = require("tslib");
 var uuid_1 = require("uuid");
 var db_1 = require("../db");
 var upload_image_service_1 = require("../services/upload/upload-image.service");
-var helpers_1 = require("./helpers");
+var helpers_1 = require("../helpers/helpers");
 var OffersModel = /** @class */ (function () {
     // tableName is model's table name in the database
     function OffersModel(tableName) {
