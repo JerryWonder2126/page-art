@@ -35,3 +35,8 @@ export interface IOffer {
   orientation?: string;
   status: 'on sale';
 }
+
+export interface IAuthDetails {
+  email: string;
+  password: string;
+}

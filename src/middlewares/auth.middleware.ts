@@ -14,7 +14,7 @@ export const bounceUnathenticated = (
   const authenticated = authState(req);
   let targetURL = req.originalUrl.split('?')[0]; // The first value is the main part of the url i.e without get parameters
   targetURL = targetURL.replace(conf.API_BASE_ENDPOINT, ''); // Strip off API_BASE_ENDPOINT, we only need the specific endpoint
-  const whitelist = ['/']; // Endpoints that do not need authentication
+  const whitelist = ['/native']; // Endpoints that do not need authentication
   if (whitelist.indexOf(targetURL) !== -1 || authenticated) {
     return next();
   }

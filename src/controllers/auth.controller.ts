@@ -1,5 +1,6 @@
 import express, {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
+import {IAuthDetails} from '../helpers/general.interface';
 import User from '../models/auth.model';
 
 const router = express.Router();
@@ -47,6 +48,35 @@ router.post('/', checkCallbackURL, async (req: Request, res: Response) => {
   }
 
   return res.render('auth/login.ejs', {error, form: req.body});
+});
+
+router.post('/native', async (req: Request, res: Response) => {
+  let error = '';
+  try {
+    const authDetails = req.body as IAuthDetails;
+    if (!authDetails.email) {
+      throw Error('Email field cannot be left empty');
+    }
+    if (!authDetails.password) {
+      throw Error('Password field cannot be left empty');
+    }
+    const verified = await User.verify(authDetails.email, authDetails.password);
+    if (!verified) {
+      throw Error('Invalid login details.');
+    }
+    const token = jwt.sign(
+      {authenticated: true},
+      process.env.COOKIE_SECRET as string,
+      {
+        expiresIn: '3h',
+      }
+    );
+    res.json({'access-token': token});
+  } catch (err: any) {
+    error = err.message;
+    res.status(406).send(error);
+    // res.sens
+  }
 });
 
 router.get('/signup', (req: Request, res: Response) => {

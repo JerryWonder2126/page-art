@@ -44,7 +44,7 @@ app.use(`${conf.BASE_URL}/sections`, protectPOST, sectionRouter); // For perform
 
 app.use(`${conf.BASE_URL}/offers`, protectPOST, offerRouter); // For performing CRUD operations on sections
 
-app.use(`${conf.BASE_URL}/sections`, socialRouter); // For lining up social links
+app.use(`${conf.BASE_URL}/sections`, socialRouter); // For linking up social links
 
 app.use(`${conf.API_BASE_ENDPOINT}`, bounceUnathenticated, authRouter); // For performing authentication
 
